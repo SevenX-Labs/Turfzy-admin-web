@@ -21,7 +21,8 @@ import {
 } from "lucide-react";
 import { useUIStore } from "@/store/ui.store";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import { useAuthStore } from "@/store/auth.store";
+import { toast } from "sonner";
 
 // Custom Turf/Soccer Pitch Icon
 const TurfIcon = (props: any) => (
@@ -52,9 +53,16 @@ export default function Sidebar() {
   const router = useRouter();
   const { sidebarOpen, setSidebarOpen } = useUIStore();
 
-  const handleLogout = () => {
-    Cookies.remove("auth_token");
-    router.push("/login");
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Successfully logged out");
+      router.push("/login");
+    } catch (error) {
+      toast.error("Failed to log out");
+    }
   };
 
   const menuItems: SidebarItem[] = [
@@ -163,8 +171,8 @@ export default function Sidebar() {
                 />
               </div>
               <div className="text-left">
-                <p className="text-xs font-black text-white">Admin</p>
-                <p className="text-[10px] font-bold text-purple-200 mt-0.5">Super Admin</p>
+                <p className="text-xs font-black text-white">{user?.name || "Admin"}</p>
+                <p className="text-[10px] font-bold text-purple-200 mt-0.5">{user?.role || "Super Admin"}</p>
               </div>
             </div>
             <button

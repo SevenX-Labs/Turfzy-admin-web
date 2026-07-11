@@ -2,7 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import { useAuthStore } from "@/store/auth.store";
+import { toast } from "sonner";
 import {
   Mail,
   Lock,
@@ -21,15 +22,22 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const loginStore = useAuthStore((state) => state.login);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API request
-    await new Promise((r) => setTimeout(r, 900));
-    Cookies.set("auth_token", "dummy-auth-token-12345", { expires: rememberMe ? 7 : 1 });
-    setIsSubmitting(false);
-    router.push("/dashboard");
+    try {
+      await loginStore({ email, password }, rememberMe);
+      toast.success("Logged in successfully!");
+      router.push("/dashboard");
+    } catch (error: any) {
+      console.error("Login error:", error);
+      const errorMsg = error.response?.data?.message || "Invalid email or password";
+      toast.error(errorMsg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

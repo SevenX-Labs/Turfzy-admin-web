@@ -1,12 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, Lock, Mail, Phone, ShieldAlert, Save } from "lucide-react";
+import { useAuthStore } from "@/store/auth.store";
 
 export default function ProfilePage() {
-  const [name, setName] = useState("Admin");
-  const [email, setEmail] = useState("admin@turfzy.com");
+  const { user } = useAuthStore();
+  const [name, setName] = useState(user?.name || "Admin");
+  const [email, setEmail] = useState(user?.email || "admin@turfzy.com");
   const [phone, setPhone] = useState("+91 99999 88888");
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setEmail(user.email);
+    }
+  }, [user]);
 
   return (
     <div className="space-y-7 pb-12 text-left">
@@ -29,7 +38,7 @@ export default function ProfilePage() {
           <div>
             <h3 className="text-lg font-black text-[#241c3d]">{name}</h3>
             <p className="text-xs font-extrabold text-purple-600 bg-purple-50 border border-purple-100 rounded-full px-3 py-1 mt-1 inline-block">
-              Super Admin
+              {user?.role || "Super Admin"}
             </p>
           </div>
           <p className="text-[10px] font-bold text-[#8a7fa8]">Logged in from IP: 192.168.1.12 · Mumbai, India</p>

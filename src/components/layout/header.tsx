@@ -2,9 +2,11 @@
 
 import { Search, Bell, Menu } from "lucide-react";
 import { useUIStore } from "@/store/ui.store";
+import { useAuthStore } from "@/store/auth.store";
 
 export default function Header() {
   const { toggleSidebar } = useUIStore();
+  const { user } = useAuthStore();
 
   return (
     <header className="flex h-20 w-full items-center justify-between bg-transparent px-6 lg:px-8">
@@ -48,8 +50,8 @@ export default function Header() {
         {/* User profile avatar */}
         <div className="flex h-11 w-11 overflow-hidden rounded-2xl border-2 border-white bg-white/40 shadow-md cursor-pointer">
           <img
-            src="https://api.dicebear.com/7.x/adventurer/svg?seed=Admin"
-            alt="Admin User"
+            src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user?.name || "Admin"}`}
+            alt={user?.name || "Admin User"}
             className="h-full w-full object-cover"
           />
         </div>
