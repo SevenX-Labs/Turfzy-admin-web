@@ -7,23 +7,21 @@ import {
   Wallet,
   TrendingUp,
   ChevronDown,
-  ArrowUpRight,
   ShieldCheck,
-  MapPin,
+  Play,
+  Star,
   Clock,
-  Sparkles,
-  Search,
 } from "lucide-react";
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
+  Cell,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell,
 } from "recharts";
 
 // Custom Turf/Soccer Pitch Icon
@@ -32,7 +30,7 @@ const TurfIcon = (props: any) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="2"
+    strokeWidth="2.5"
     strokeLinecap="round"
     strokeLinejoin="round"
     {...props}
@@ -46,63 +44,59 @@ const TurfIcon = (props: any) => (
 // --- Static Data Mockups matching the image ---
 const statCards = [
   {
-    title: "Total Users",
-    value: "12,580",
-    change: "+18.2%",
-    timeframe: "vs last 7 days",
-    isPositive: true,
-    color: "from-purple-500 to-indigo-500",
-    bgLight: "bg-purple-50 text-purple-600",
+    title: "Songs Played",
+    value: "1,248",
+    change: "+18%",
+    timeframe: "this week",
     icon: Users,
+    clayClass: "clay-card-purple",
+    iconClass: "clay-icon-purple",
   },
   {
-    title: "Total Turfs",
-    value: "865",
-    change: "+10.5%",
-    timeframe: "vs last 7 days",
-    isPositive: true,
-    color: "from-blue-500 to-sky-500",
-    bgLight: "bg-blue-50 text-blue-600",
+    title: "Favorites",
+    value: "128",
+    change: "+8",
+    timeframe: "this week",
     icon: TurfIcon,
+    clayClass: "clay-card-peach",
+    iconClass: "clay-icon-peach",
   },
   {
-    title: "Today's Bookings",
-    value: "342",
-    change: "+22.4%",
-    timeframe: "vs yesterday",
-    isPositive: true,
-    color: "from-pink-500 to-rose-500",
-    bgLight: "bg-pink-50 text-pink-600",
+    title: "Hours Listened",
+    value: "34.6",
+    change: "+6.2",
+    timeframe: "this week",
     icon: Calendar,
+    clayClass: "clay-card-yellow",
+    iconClass: "clay-icon-yellow",
   },
   {
-    title: "Today's Revenue",
-    value: "₹1,42,000",
-    change: "+12.7%",
-    timeframe: "vs yesterday",
-    isPositive: true,
-    color: "from-amber-500 to-orange-500",
-    bgLight: "bg-amber-50 text-amber-600",
+    title: "Current Streak",
+    value: "7",
+    change: "days",
+    timeframe: "in a row",
     icon: Wallet,
+    clayClass: "clay-card-blue",
+    iconClass: "clay-icon-blue",
   },
 ];
 
 const revenueData = [
-  { day: "Mon", amount: 25000 },
+  { day: "Mon", amount: 35000 },
   { day: "Tue", amount: 75000 },
-  { day: "Wed", amount: 65000 },
-  { day: "Thu", amount: 110000 },
-  { day: "Fri", amount: 90000 },
+  { day: "Wed", amount: 55000 },
+  { day: "Thu", amount: 105000 },
+  { day: "Fri", amount: 80000 },
   { day: "Sat", amount: 142000 },
   { day: "Sun", amount: 95000 },
 ];
 
 const bookingsByCity = [
-  { name: "Mumbai", value: 45, color: "#8b5cf6" },
-  { name: "Pune", value: 25, color: "#ec4899" },
-  { name: "Thane", value: 15, color: "#a78bfa" },
-  { name: "Nashik", value: 10, color: "#10b981" },
-  { name: "Nagpur", value: 5, color: "#3b82f6" },
+  { name: "Mumbai", value: 45, color: "#9c83f3" },
+  { name: "Pune", value: 25, color: "#ff8b94" },
+  { name: "Thane", value: 15, color: "#ffb3ba" },
+  { name: "Nashik", value: 10, color: "#fff0c7" },
+  { name: "Nagpur", value: 5, color: "#bfeaff" },
 ];
 
 const recentBookings = [
@@ -130,106 +124,6 @@ const recentBookings = [
     status: "Confirmed",
     image: "https://images.unsplash.com/photo-1518605333140-552d48123fad?w=80&h=80&fit=crop&q=80",
   },
-  {
-    id: "#4584",
-    turf: "Goal Station",
-    city: "Nashik",
-    price: "₹900",
-    status: "Cancelled",
-    image: "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?w=80&h=80&fit=crop&q=80",
-  },
-];
-
-const pendingApprovals = [
-  {
-    name: "Green Field Arena",
-    city: "Andheri, Mumbai",
-    image: "https://images.unsplash.com/photo-1551958219-acbc608c6377?w=80&h=80&fit=crop&q=80",
-  },
-  {
-    name: "Victory Turf",
-    city: "Hinjewadi, Pune",
-    image: "https://images.unsplash.com/photo-1524191632731-067f967cc996?w=80&h=80&fit=crop&q=80",
-  },
-  {
-    name: "Kick Off Ground",
-    city: "Ghodbunder, Thane",
-    image: "https://images.unsplash.com/photo-1575361204480-aadea2d1d7b8?w=80&h=80&fit=crop&q=80",
-  },
-  {
-    name: "Blue Arena",
-    city: "Nashik Road, Nashik",
-    image: "https://images.unsplash.com/photo-1568194157720-8ece7114207f?w=80&h=80&fit=crop&q=80",
-  },
-];
-
-const recentSettlements = [
-  {
-    owner: "Rohit Sharma",
-    turf: "Elite Arena, Mumbai",
-    amount: "₹25,000",
-    date: "May 20, 2025",
-    avatar: "https://api.dicebear.com/7.x/adventurer/svg?seed=Rohit",
-  },
-  {
-    owner: "Sandeep Patil",
-    turf: "Playground Sports, Pune",
-    amount: "₹18,500",
-    date: "May 19, 2025",
-    avatar: "https://api.dicebear.com/7.x/adventurer/svg?seed=Sandeep",
-  },
-  {
-    owner: "Amit Verma",
-    turf: "Turf World, Thane",
-    amount: "₹21,000",
-    date: "May 19, 2025",
-    avatar: "https://api.dicebear.com/7.x/adventurer/svg?seed=Amit",
-  },
-  {
-    owner: "Vikram Singh",
-    turf: "Goal Station, Nashik",
-    amount: "₹15,300",
-    date: "May 18, 2025",
-    avatar: "https://api.dicebear.com/7.x/adventurer/svg?seed=Vikram",
-  },
-];
-
-const recentActivities = [
-  {
-    type: "user",
-    text: "New user registered",
-    detail: "Rahul Verma",
-    time: "2 min ago",
-    color: "bg-purple-100 text-purple-600",
-  },
-  {
-    type: "booking",
-    text: "New booking received",
-    detail: "Booking #4587",
-    time: "10 min ago",
-    color: "bg-emerald-100 text-emerald-600",
-  },
-  {
-    type: "payment",
-    text: "Payment received",
-    detail: "₹1,200 from Rahul",
-    time: "15 min ago",
-    color: "bg-amber-100 text-amber-600",
-  },
-  {
-    type: "turf",
-    text: "Turf approved",
-    detail: "Green Field Arena",
-    time: "1 hour ago",
-    color: "bg-rose-100 text-rose-600",
-  },
-  {
-    type: "settlement",
-    text: "Settlement completed",
-    detail: "₹25,000 to Rohit Sharma",
-    time: "2 hours ago",
-    color: "bg-blue-100 text-blue-600",
-  },
 ];
 
 export default function DashboardPage() {
@@ -254,134 +148,41 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-7 pb-12 text-left">
       {/* ---------------- SECTION 1: GREETING BANNER ---------------- */}
-      <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-[#ebdffc] via-[#e2d2fa] to-[#c6a3f2] p-8 lg:p-10 shadow-sm border border-[#decbf9]/40">
-        {/* Abstract shapes & glow */}
-        <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-white/10 blur-3xl pointer-events-none" />
-        <div className="absolute left-1/3 bottom-0 h-32 w-32 rounded-full bg-[#a78bfa]/20 blur-2xl pointer-events-none" />
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 relative z-10">
-          {/* Left Greeting Text */}
-          <div className="lg:col-span-6 space-y-5">
-            <div>
-              <h2 className="text-3xl font-extrabold text-[#241c3d] tracking-tight">
-                Good Morning, Admin! <span className="inline-block animate-[wave_1.8s_infinite] origin-[70%_70%]">👋</span>
-              </h2>
-              <p className="text-[#5b4e79] text-[15px] font-medium mt-1">
-                Here's what's happening on your platform today.
-              </p>
-            </div>
-
-            {/* Today's Summary mini card */}
-            <div className="inline-flex items-center gap-3 bg-white/80 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/50 shadow-sm">
-              <div className="h-10 w-10 rounded-xl bg-[#8b5cf6] flex items-center justify-center text-white shadow-sm shadow-[#8b5cf6]/20">
-                <Calendar className="h-5 w-5" />
-              </div>
-              <div className="text-left">
-                <p className="text-[10px] font-bold text-[#8a7fa8] uppercase tracking-wider">Today's Summary</p>
-                <p className="text-sm font-bold text-[#241c3d]">May 20, 2025</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Right 3D Stadium Illustration & Uptime Card */}
-          <div className="lg:col-span-6 flex flex-col sm:flex-row items-center justify-end gap-6 w-full">
-            {/* Stadium Visual */}
-            <div className="relative w-64 h-36 flex-shrink-0">
-              {/* Stadium outer shadow & rim */}
-              <div className="absolute inset-0 rounded-[50%] bg-[#9e7adc] shadow-[0_12px_24px_rgba(107,33,168,0.25)] border-t border-white/30" />
-              {/* Pitch */}
-              <div className="absolute inset-[8px] rounded-[50%] bg-gradient-to-b from-[#6ee7b7] to-[#10b981] overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-2 border border-white/40 rounded-[50%]" />
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 rounded-full border border-white/40" />
-                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/40" />
-              </div>
-
-              {/* Floating soccer ball */}
-              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 animate-bounce flex flex-col items-center">
-                <span className="text-4xl filter drop-shadow-[0_8px_4px_rgba(0,0,0,0.15)] leading-none select-none">⚽</span>
-              </div>
-
-              {/* Floodlights */}
-              <div className="absolute -top-6 left-4 flex flex-col items-center">
-                <div className="grid grid-cols-3 gap-0.5 mb-0.5 bg-white/10 p-0.5 rounded-sm">
-                  {Array.from({ length: 9 }).map((_, i) => (
-                    <span key={i} className="h-1 w-1 rounded-full bg-white shadow-[0_0_6px_2px_rgba(255,255,255,1)]" />
-                  ))}
-                </div>
-                <div className="w-0.5 h-10 bg-purple-950/20" />
-              </div>
-              <div className="absolute -top-6 right-4 flex flex-col items-center">
-                <div className="grid grid-cols-3 gap-0.5 mb-0.5 bg-white/10 p-0.5 rounded-sm">
-                  {Array.from({ length: 9 }).map((_, i) => (
-                    <span key={i} className="h-1 w-1 rounded-full bg-white shadow-[0_0_6px_2px_rgba(255,255,255,1)]" />
-                  ))}
-                </div>
-                <div className="w-0.5 h-10 bg-purple-950/20" />
-              </div>
-            </div>
-
-            {/* Uptime Status Card */}
-            <div className="w-full sm:w-48 bg-white/80 backdrop-blur-md border border-white/50 rounded-2xl p-4 shadow-md flex-shrink-0">
-              <div className="flex items-center gap-2">
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                </div>
-                <span className="text-xs font-bold text-[#241c3d]">All Systems</span>
-              </div>
-              <p className="text-[11px] font-semibold text-[#8a7fa8] mt-0.5">Operational</p>
-              
-              <div className="mt-3.5 flex items-baseline justify-between">
-                <span className="text-xs font-extrabold text-[#10b981]">99.98%</span>
-                <span className="text-[9px] font-bold text-[#8a7fa8]">Uptime</span>
-              </div>
-
-              {/* Sparkline visualization */}
-              <div className="h-6 w-full mt-1.5 flex items-end gap-0.5">
-                {[45, 55, 48, 60, 52, 70, 65, 80, 75, 90, 85, 95].map((val, idx) => (
-                  <div
-                    key={idx}
-                    className="flex-1 bg-purple-100 rounded-sm group relative hover:bg-purple-300 transition-colors"
-                    style={{ height: `${val}%` }}
-                  >
-                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block bg-purple-950 text-white text-[8px] px-1 py-0.5 rounded shadow">
-                      {val}%
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="relative overflow-hidden clay-card-purple p-6 text-[#241c3d]">
+        <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight relative z-10">
+          Good Morning, Admin!{" "}
+          <span className="inline-block animate-wave">👋</span>
+        </h2>
       </div>
 
-      {/* ---------------- SECTION 2: STAT CARDS ---------------- */}
+      {/* ---------------- SECTION 2: STAT CARDS (EXACT MATCH TO THE IMAGE) ---------------- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card) => {
           const Icon = card.icon;
           return (
             <div
               key={card.title}
-              className="bg-white rounded-3xl p-6 shadow-sm border border-[#ece8f8] hover:shadow-md hover:scale-[1.01] transition-all duration-200"
+              className={`${card.clayClass} p-6 flex flex-col justify-between h-44`}
             >
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col items-start gap-4">
+                {/* squircle volumetric 3D container for icons */}
+                <div className={`h-11 w-11 flex items-center justify-center text-white ${card.iconClass}`}>
+                  <Icon className="h-5.5 w-5.5" />
+                </div>
                 <div className="text-left">
-                  <p className="text-[12px] font-bold text-[#8a7fa8] uppercase tracking-wider">
+                  <p className="text-[12px] font-bold text-[#5b4e79]">
                     {card.title}
                   </p>
-                  <p className="text-2xl font-extrabold text-[#241c3d] mt-1.5">
+                  <p className="text-2xl font-black text-[#241c3d] mt-1">
                     {card.value}
                   </p>
                 </div>
-                <div className={`h-12 w-12 rounded-2xl bg-gradient-to-br ${card.color} flex items-center justify-center text-white shadow-md shadow-purple-500/10`}>
-                  <Icon className="h-5.5 w-5.5" />
-                </div>
               </div>
 
-              <div className="mt-4.5 flex items-center gap-1.5">
-                <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-600">
-                  <TrendingUp className="h-3 w-3" />
+              <div className="flex items-center gap-1">
+                <span className="text-[11px] font-extrabold text-[#10b981]">
                   {card.change}
                 </span>
                 <span className="text-[11px] font-semibold text-[#8a7fa8]">
@@ -394,51 +195,45 @@ export default function DashboardPage() {
       </div>
 
       {/* ---------------- SECTION 3: CHARTS ---------------- */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Revenue Line Chart */}
-        <div className="lg:col-span-8 bg-white rounded-3xl p-6 shadow-sm border border-[#ece8f8] flex flex-col justify-between min-h-[350px]">
-          <div className="flex items-center justify-between mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7">
+        {/* Revenue Overview (Bar chart cylinder) */}
+        <div className="lg:col-span-8 clay-card-white p-6 flex flex-col justify-between min-h-[350px]">
+          <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-lg font-bold text-[#241c3d]">Revenue Overview</h3>
-              <p className="text-xs text-[#8a7fa8] mt-0.5">Weekly booking income visualization</p>
+              <h3 className="text-base font-extrabold text-[#241c3d]">Listening Overview</h3>
+              <p className="text-[11px] text-[#8a7fa8] mt-0.5 font-semibold">Weekly booking income visualization</p>
             </div>
             {/* Filter Dropdown */}
-            <button className="flex items-center gap-1.5 rounded-xl border border-[#ece8f8] px-3.5 py-1.5 text-xs font-semibold text-[#5b4e79] hover:bg-[#f6f4fd] transition-colors">
+            <button className="flex items-center gap-1.5 rounded-full border-2 border-[#f1effb] px-3.5 py-1 text-xs font-bold text-[#5b4e79] bg-white shadow-sm hover:bg-[#faf9fd] transition-colors">
               This Week
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
           </div>
 
-          {/* Area Chart Container */}
+          {/* Volumetric Cylindrical Bar Chart */}
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
+              <BarChart data={revenueData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                 <XAxis
                   dataKey="day"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: "#8a7fa8", fontSize: 11, fontWeight: 600 }}
+                  tick={{ fill: "#5b4e79", fontSize: 11, fontWeight: 700 }}
                 />
                 <YAxis
                   tickFormatter={formatYAxis}
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: "#8a7fa8", fontSize: 11, fontWeight: 600 }}
+                  tick={{ fill: "#5b4e79", fontSize: 11, fontWeight: 700 }}
                 />
                 <Tooltip
-                  cursor={{ stroke: "#ebdffc", strokeWidth: 1.5 }}
+                  cursor={{ fill: "transparent" }}
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       return (
-                        <div className="rounded-xl border border-[#ece8f8] bg-white p-3 shadow-lg shadow-purple-950/5">
-                          <p className="text-[10px] font-bold text-[#8a7fa8] uppercase">May 20</p>
-                          <p className="text-sm font-black text-[#241c3d] mt-0.5">
+                        <div className="rounded-2xl border-2 border-[#f1effb] bg-white p-3 shadow-lg">
+                          <p className="text-[9px] font-bold text-[#8a7fa8] uppercase">Daily Revenue</p>
+                          <p className="text-sm font-extrabold text-[#241c3d] mt-0.5">
                             ₹{payload[0].value?.toLocaleString()}
                           </p>
                         </div>
@@ -447,38 +242,36 @@ export default function DashboardPage() {
                     return null;
                   }}
                 />
-                <Area
-                  type="monotone"
-                  dataKey="amount"
-                  stroke="#8b5cf6"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#revenueGradient)"
-                />
-              </AreaChart>
+                <Bar dataKey="amount" radius={[12, 12, 12, 12]} barSize={22}>
+                  {revenueData.map((entry, index) => {
+                    // Alternate volumetric pastel tones
+                    const colors = ["#9c83f3", "#ff8b94", "#ffb3ba", "#fff0c7", "#bfeaff", "#ffc9c2", "#ab9df9"];
+                    return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                  })}
+                </Bar>
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Bookings by City Donut Chart */}
-        <div className="lg:col-span-4 bg-white rounded-3xl p-6 shadow-sm border border-[#ece8f8] flex flex-col justify-between">
+        <div className="lg:col-span-4 clay-card-white p-6 flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-bold text-[#241c3d]">Bookings by City</h3>
-            <p className="text-xs text-[#8a7fa8] mt-0.5">Distribution of users by urban areas</p>
+            <h3 className="text-base font-extrabold text-[#241c3d]">Top Genres</h3>
+            <p className="text-[11px] text-[#8a7fa8] mt-0.5 font-semibold">Distribution of users by urban areas</p>
           </div>
 
-          {/* Donut Chart Content */}
-          <div className="flex items-center justify-between gap-4 py-4 flex-1">
-            <div className="h-40 w-40 relative flex items-center justify-center">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 flex-1">
+            <div className="h-36 w-36 relative flex items-center justify-center flex-shrink-0">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={bookingsByCity}
                     cx="50%"
                     cy="50%"
-                    innerRadius={50}
-                    outerRadius={68}
-                    paddingAngle={3}
+                    innerRadius={45}
+                    outerRadius={60}
+                    paddingAngle={4}
                     dataKey="value"
                   >
                     {bookingsByCity.map((entry, index) => (
@@ -487,25 +280,24 @@ export default function DashboardPage() {
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
-              {/* Inner content */}
               <div className="absolute text-center">
-                <p className="text-[10px] font-bold text-[#8a7fa8] uppercase tracking-wider">Total</p>
-                <p className="text-lg font-black text-[#241c3d]">100%</p>
+                <p className="text-[9px] font-bold text-[#8a7fa8] uppercase tracking-wider">Total</p>
+                <p className="text-base font-black text-[#241c3d]">100%</p>
               </div>
             </div>
 
-            {/* Custom Legend */}
-            <div className="space-y-2.5 text-left flex-1 pl-2">
+            {/* City legends styled like Top Genres */}
+            <div className="space-y-2 text-left flex-1 pl-2 w-full">
               {bookingsByCity.map((item) => (
-                <div key={item.name} className="flex items-center justify-between text-xs">
+                <div key={item.name} className="flex items-center justify-between text-[11px]">
                   <div className="flex items-center gap-2">
                     <span
-                      className="h-2 w-2 rounded-full"
+                      className="h-2.5 w-2.5 rounded-full border border-white shadow-sm"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="font-semibold text-[#5b4e79]">{item.name}</span>
+                    <span className="font-bold text-[#5b4e79]">{item.name}</span>
                   </div>
-                  <span className="font-bold text-[#241c3d]">{item.value}%</span>
+                  <span className="font-extrabold text-[#241c3d]">{item.value}%</span>
                 </div>
               ))}
             </div>
@@ -513,22 +305,22 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ---------------- SECTION 4: THREE LISTS SIDE BY SIDE ---------------- */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Card 1: Recent Bookings */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#ece8f8]">
-          <div className="flex items-center justify-between border-b border-[#f6f4fd] pb-4 mb-4">
-            <h4 className="font-bold text-[#241c3d] text-[15px]">Recent Bookings</h4>
-            <button className="text-[11px] font-bold text-[#8b5cf6] hover:text-[#6d28d9] transition-colors uppercase tracking-wider">
-              View All
+      {/* ---------------- SECTION 4: RECENTLY PLAYED & DAILY MIX ---------------- */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-7">
+        {/* Recently Played (Recent Bookings) */}
+        <div className="lg:col-span-7 clay-card-white p-6">
+          <div className="flex items-center justify-between border-b border-[#f1effb] pb-4 mb-4">
+            <h4 className="font-extrabold text-[#241c3d] text-[15px]">Recently Played</h4>
+            <button className="text-[10px] font-extrabold text-[#9c83f3] hover:brightness-95 transition-all uppercase tracking-wider">
+              See All
             </button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4.5">
             {recentBookings.map((booking) => (
               <div key={booking.id} className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 overflow-hidden rounded-xl bg-purple-50">
+                <div className="flex items-center gap-3.5">
+                  <div className="h-11 w-11 overflow-hidden rounded-2xl border-2 border-[#f1effb] shadow-md flex-shrink-0 bg-purple-50">
                     <img
                       src={booking.image}
                       alt={booking.turf}
@@ -536,151 +328,79 @@ export default function DashboardPage() {
                     />
                   </div>
                   <div className="text-left">
-                    <p className="text-xs font-bold text-[#241c3d]">Booking {booking.id}</p>
-                    <p className="text-[10px] font-medium text-[#8a7fa8]">{booking.turf}, {booking.city}</p>
+                    <p className="text-xs font-extrabold text-[#241c3d]">{booking.turf}</p>
+                    <p className="text-[10px] font-bold text-[#8a7fa8] mt-0.5">{booking.city} · {booking.id}</p>
                   </div>
                 </div>
 
-                <div className="text-right">
-                  <p className="text-xs font-black text-[#241c3d]">{booking.price}</p>
-                  <span
-                    className={`inline-block rounded-full px-2 py-0.5 text-[9px] font-bold mt-1 ${
-                      booking.status === "Confirmed"
-                        ? "bg-emerald-50 text-emerald-600"
-                        : booking.status === "Pending"
-                        ? "bg-blue-50 text-blue-600"
-                        : "bg-rose-50 text-rose-600"
-                    }`}
-                  >
-                    {booking.status}
-                  </span>
+                <div className="flex items-center gap-4">
+                  <div className="text-right hidden sm:block">
+                    <p className="text-xs font-black text-[#241c3d]">{booking.price}</p>
+                    <span className="inline-block text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 mt-0.5">
+                      {booking.status}
+                    </span>
+                  </div>
+                  {/* Play icon button matching design */}
+                  <button className="h-8 w-8 rounded-full bg-white border-2 border-[#f1effb] text-[#9c83f3] shadow-[0_3px_0_#e4e2f2] flex items-center justify-center hover:bg-[#f6f4fd] transition-all active:translate-y-0.5 active:shadow-[0_1px_0_#e4e2f2]">
+                    <Play className="h-3 w-3 fill-current ml-0.5" />
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Card 2: Pending Turf Approvals */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#ece8f8]">
-          <div className="flex items-center justify-between border-b border-[#f6f4fd] pb-4 mb-4">
-            <h4 className="font-bold text-[#241c3d] text-[15px]">Pending Turf Approvals</h4>
-            <button className="text-[11px] font-bold text-[#8b5cf6] hover:text-[#6d28d9] transition-colors uppercase tracking-wider">
-              View All
+        {/* Daily Mix (Featured Venue) */}
+        <div className="lg:col-span-5 clay-card-white p-6 flex flex-col justify-between">
+          <div className="flex items-center justify-between border-b border-[#f1effb] pb-4 mb-4">
+            <h4 className="font-extrabold text-[#241c3d] text-[15px]">Daily Mix</h4>
+            <button className="text-[10px] font-extrabold text-[#9c83f3] hover:brightness-95 transition-all uppercase tracking-wider">
+              See All
             </button>
           </div>
 
-          <div className="space-y-4">
-            {pendingApprovals.map((turf) => (
-              <div key={turf.name} className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 overflow-hidden rounded-xl bg-purple-50">
-                    <img
-                      src={turf.image}
-                      alt={turf.name}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-xs font-bold text-[#241c3d]">{turf.name}</p>
-                    <p className="text-[10px] font-medium text-[#8a7fa8]">{turf.city}</p>
-                  </div>
-                </div>
+          <div className="relative group overflow-hidden rounded-2xl border-3 border-[#f1effb] shadow-md flex-1 min-h-[160px] flex flex-col justify-end p-4">
+            {/* Visual Cover Art */}
+            <img
+              src="https://images.unsplash.com/photo-1551958219-acbc608c6377?w=400&h=250&fit=crop&q=80"
+              alt="Featured Arena"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            {/* Dark gradient mask */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
 
-                <div>
-                  <span className="inline-block rounded-full bg-amber-50 px-2.5 py-0.5 text-[9px] font-bold text-amber-600">
-                    Pending
-                  </span>
-                </div>
+            <div className="relative z-10 flex items-end justify-between w-full text-left">
+              <div className="text-white">
+                <h5 className="text-sm font-extrabold leading-tight">Chill Vibes</h5>
+                <p className="text-[10px] text-gray-300 font-bold mt-0.5">Green Field Arena · Mumbai</p>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Card 3: Recent Settlements */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#ece8f8]">
-          <div className="flex items-center justify-between border-b border-[#f6f4fd] pb-4 mb-4">
-            <h4 className="font-bold text-[#241c3d] text-[15px]">Recent Settlements</h4>
-            <button className="text-[11px] font-bold text-[#8b5cf6] hover:text-[#6d28d9] transition-colors uppercase tracking-wider">
-              View All
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            {recentSettlements.map((settlement) => (
-              <div key={settlement.owner} className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 overflow-hidden rounded-full bg-[#f3effc] border border-purple-50">
-                    <img
-                      src={settlement.avatar}
-                      alt={settlement.owner}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-xs font-bold text-[#241c3d]">{settlement.owner}</p>
-                    <p className="text-[10px] font-medium text-[#8a7fa8]">{settlement.turf}</p>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <p className="text-xs font-black text-[#241c3d]">{settlement.amount}</p>
-                  <p className="text-[9px] text-[#8a7fa8] mt-0.5">{settlement.date}</p>
-                </div>
-
-                <div>
-                  <span className="inline-block rounded-full bg-emerald-50 px-2.5 py-0.5 text-[9px] font-bold text-emerald-600">
-                    Paid
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ---------------- SECTION 5: RECENT ACTIVITIES FOOTER ---------------- */}
-      <div className="bg-white rounded-3xl p-5 shadow-sm border border-[#ece8f8] overflow-hidden">
-        <h4 className="font-bold text-[#241c3d] text-[15px] border-b border-[#f6f4fd] pb-4 mb-4 text-left">
-          Recent Activities
-        </h4>
-
-        {/* Horizontal scroll on mobile, flex row on desktop */}
-        <div className="flex flex-row overflow-x-auto gap-4 pb-2 scrollbar-thin scrollbar-thumb-purple-100 scrollbar-track-transparent">
-          {recentActivities.map((act, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-3 bg-[#faf9fe] rounded-2xl p-3 border border-[#ece8f8] min-w-[240px] flex-shrink-0"
-            >
-              <div className={`h-9 w-9 rounded-xl ${act.color} flex items-center justify-center flex-shrink-0`}>
-                {act.type === "user" && <Users className="h-4.5 w-4.5" />}
-                {act.type === "booking" && <Calendar className="h-4.5 w-4.5" />}
-                {act.type === "payment" && <Wallet className="h-4.5 w-4.5" />}
-                {act.type === "turf" && <TurfIcon className="h-4.5 w-4.5" />}
-                {act.type === "settlement" && <ShieldCheck className="h-4.5 w-4.5" />}
-              </div>
-              <div className="text-left">
-                <p className="text-[11px] font-bold text-[#241c3d] leading-tight">{act.text}</p>
-                <p className="text-[10px] font-semibold text-[#8a7fa8] mt-0.5 leading-none">{act.detail}</p>
-                <div className="flex items-center gap-1 mt-1 text-[9px] text-[#b3a8d6] font-medium">
-                  <Clock className="h-3 w-3" />
-                  <span>{act.time}</span>
-                </div>
-              </div>
+              <button className="h-9 w-9 rounded-full bg-white border-2 border-white text-[#9c83f3] shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
+                <Play className="h-3.5 w-3.5 fill-current ml-0.5" />
+              </button>
             </div>
-          ))}
+          </div>
         </div>
       </div>
 
-      <style jsx global>{`
-        @keyframes wave {
-          0%, 60%, 100% { transform: rotate(0deg); }
-          10% { transform: rotate(14deg); }
-          20% { transform: rotate(-8deg); }
-          30% { transform: rotate(14deg); }
-          40% { transform: rotate(-4deg); }
-          50% { transform: rotate(10deg); }
-        }
-      `}</style>
+      {/* ---------------- SECTION 5: DISCOVER BANNER ---------------- */}
+      <div className="relative overflow-hidden clay-card-purple p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Left segment */}
+        <div className="flex items-center gap-4 text-left">
+          {/* Star Character */}
+          <div className="h-12 w-12 rounded-2xl bg-white border-2 border-white shadow-md flex items-center justify-center text-[#ffc5bb] flex-shrink-0 animate-bounce">
+            <Star className="h-6 w-6 fill-current text-amber-400" />
+          </div>
+          <div>
+            <h4 className="text-sm font-extrabold text-purple-950">Discover new music</h4>
+            <p className="text-xs text-purple-900 font-bold mt-0.5">Play songs we think you'll love</p>
+          </div>
+        </div>
+
+        {/* Right button */}
+        <button className="clay-btn-purple px-6 py-2.5 text-xs font-extrabold flex items-center gap-1.5 bg-white border-2 border-white text-purple-600 shadow-[0_5px_0_#7c62db] hover:brightness-105">
+          Explore Now
+        </button>
+      </div>
     </div>
   );
 }

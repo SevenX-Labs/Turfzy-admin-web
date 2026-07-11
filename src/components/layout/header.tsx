@@ -13,7 +13,7 @@ export default function Header() {
         {/* Toggle Button */}
         <button
           onClick={toggleSidebar}
-          className="lg:hidden flex h-11 w-11 items-center justify-center rounded-2xl bg-white border border-[#ece8f8] text-[#5b4e79] shadow-sm hover:bg-[#f6f4fd] hover:text-[#7c3aed] transition-colors"
+          className="lg:hidden flex h-11 w-11 items-center justify-center rounded-2xl bg-white border-2 border-[#f1effb] text-[#5b4e79] shadow-[0_4px_0_#e4e2f2] hover:bg-[#f6f4fd] hover:text-[#7c3aed] active:translate-y-0.5 active:shadow-[0_2px_0_#e4e2f2] transition-all"
           aria-label="Open Sidebar"
         >
           <Menu className="h-5 w-5" />
@@ -25,7 +25,7 @@ export default function Header() {
           <input
             type="text"
             placeholder="Search for turfs, owners, bookings..."
-            className="w-full rounded-full border border-[#ece8f8] bg-white py-2.5 pl-12 pr-4 text-sm text-[#1e1b33] placeholder:text-[#a79fc0] outline-none transition focus:border-[#8b5cf6] focus:ring-4 focus:ring-[#8b5cf6]/10"
+            className="w-full clay-input py-2.5 pl-12 pr-4 text-sm text-[#1e1b33] placeholder:text-[#a79fc0]"
           />
         </div>
       </div>
@@ -33,20 +33,20 @@ export default function Header() {
       {/* Right: Notifications & User Avatar */}
       <div className="flex items-center gap-4">
         {/* Mobile Search Icon (only visible on extra small screens) */}
-        <button className="flex sm:hidden h-11 w-11 items-center justify-center rounded-2xl bg-white border border-[#ece8f8] text-[#5b4e79] hover:bg-[#f6f4fd] transition-colors">
+        <button className="flex sm:hidden h-11 w-11 items-center justify-center rounded-2xl bg-white border-2 border-[#f1effb] text-[#5b4e79] shadow-[0_4px_0_#e4e2f2] hover:bg-[#f6f4fd] active:translate-y-0.5 active:shadow-[0_2px_0_#e4e2f2] transition-all">
           <Search className="h-5 w-5" />
         </button>
 
         {/* Notifications Icon with Badge */}
-        <button className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-white border border-[#ece8f8] text-[#5b4e79] shadow-sm hover:bg-[#f6f4fd] transition-colors">
+        <button className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-white border-2 border-[#f1effb] text-[#5b4e79] shadow-[0_4px_0_#e4e2f2] hover:bg-[#f6f4fd] active:translate-y-0.5 active:shadow-[0_2px_0_#e4e2f2] transition-all">
           <Bell className="h-5 w-5" />
-          <span className="absolute right-2.5 top-2.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#ff4d6a] text-[9px] font-bold text-white shadow-sm shadow-[#ff4d6a]/20">
+          <span className="absolute right-1 top-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-[#ff4d6a] text-[8px] font-extrabold text-white border border-white">
             8
           </span>
         </button>
 
         {/* User profile avatar */}
-        <div className="flex h-11 w-11 overflow-hidden rounded-full border-2 border-purple-100 bg-[#f3effc] cursor-pointer">
+        <div className="flex h-11 w-11 overflow-hidden rounded-2xl border-2 border-white bg-white/40 shadow-md cursor-pointer">
           <img
             src="https://api.dicebear.com/7.x/adventurer/svg?seed=Admin"
             alt="Admin User"
