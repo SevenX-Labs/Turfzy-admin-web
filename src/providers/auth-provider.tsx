@@ -11,10 +11,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const token = Cookies.get("auth_token");
-    if (token && !user) {
-      fetchUser().finally(() => {
-        setInitialLoading(false);
-      });
+    if (token) {
+      // Set initial loading to false immediately to enable instant shell render.
+      // If the token is expired/invalid, backend calls will trigger 401 and redirect.
+      setInitialLoading(false);
+      if (!user) {
+        fetchUser().catch(() => {
+          // Silent catch since interceptor/store handles redirect
+        });
+      }
     } else {
       setInitialLoading(false);
     }

@@ -361,3 +361,20 @@ input[type="radio"],
   -ms-overflow-style: none !important;  /* IE and Edge */
   scrollbar-width: none !important;  /* Firefox */
 }
+
+/* Optimize Claymorphic hardware acceleration & smooth rendering */
+.clay-sidebar,
+.clay-sidebar-active,
+.clay-card-white,
+.clay-card-purple,
+.clay-card-peach,
+.clay-card-yellow,
+.clay-card-blue,
+.clay-card-green,
+.clay-btn-purple,
+.clay-btn-pink {
+  will-change: transform, box-shadow;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
