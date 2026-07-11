@@ -452,15 +452,15 @@ export default function DashboardPage() {
           </div>
 
           <div className="overflow-x-auto [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-purple-100 [&::-webkit-scrollbar-thumb]:rounded-full">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[750px]">
               <thead>
                 <tr className="border-b border-[#f1effb] text-[#8a7fa8] text-[10px] font-black uppercase tracking-wider">
-                  <th className="pb-3 pl-2">ID</th>
-                  <th className="pb-3">Venue / Turf</th>
-                  <th className="pb-3">Customer Phone</th>
-                  <th className="pb-3">Booking Date</th>
-                  <th className="pb-3">Amount</th>
-                  <th className="pb-3">Status</th>
+                  <th className="pb-3 pl-2 pr-4">ID</th>
+                  <th className="pb-3 pr-4">Venue / Turf</th>
+                  <th className="pb-3 pr-4">Customer Phone</th>
+                  <th className="pb-3 pr-4">Booking Date</th>
+                  <th className="pb-3 pr-4">Amount</th>
+                  <th className="pb-3 pr-4">Status</th>
                   <th className="pb-3 pr-2 text-right">Action</th>
                 </tr>
               </thead>
@@ -468,32 +468,32 @@ export default function DashboardPage() {
                 {recentActivity?.bookings && recentActivity.bookings.length > 0 ? (
                   recentActivity.bookings.map((booking) => (
                     <tr key={booking.id} className="text-xs hover:bg-[#faf9fd]/80 transition-colors group">
-                      <td className="py-3.5 pl-2 font-extrabold text-purple-600 tabular-nums">
+                      <td className="py-3.5 pl-2 pr-4 font-extrabold text-purple-600 tabular-nums whitespace-nowrap">
                         #{booking.id.slice(-6).toUpperCase()}
                       </td>
-                      <td className="py-3.5">
+                      <td className="py-3.5 pr-4 whitespace-nowrap">
                         <div className="font-extrabold text-[#241c3d]">{booking.turf?.name || "Premium Turf"}</div>
                         <div className="text-[10px] text-[#8a7fa8] font-bold mt-0.5">{booking.turf?.city || "Mumbai"}</div>
                       </td>
-                      <td className="py-3.5 font-bold text-[#5b4e79]">
+                      <td className="py-3.5 pr-4 font-bold text-[#5b4e79] whitespace-nowrap">
                         {booking.user?.phone}
                       </td>
-                      <td className="py-3.5 text-[#8a7fa8] font-bold">
+                      <td className="py-3.5 pr-4 text-[#8a7fa8] font-bold whitespace-nowrap">
                         {new Date(booking.bookingDate).toLocaleDateString("en-US", {
                           day: "2-digit",
                           month: "short",
                           year: "numeric"
                         })}
                       </td>
-                      <td className="py-3.5 font-black text-[#241c3d] tabular-nums">
+                      <td className="py-3.5 pr-4 font-black text-[#241c3d] tabular-nums whitespace-nowrap">
                         ₹{booking.amount}
                       </td>
-                      <td className="py-3.5">
+                      <td className="py-3.5 pr-4 whitespace-nowrap">
                         <span className={`inline-block text-[9px] font-extrabold px-2 py-0.5 rounded-full border ${getStatusColor(booking.bookingStatus)}`}>
                           {booking.bookingStatus}
                         </span>
                       </td>
-                      <td className="py-3.5 pr-2 text-right">
+                      <td className="py-3.5 pr-2 text-right whitespace-nowrap">
                         <button
                           onClick={() => router.push(`/bookings/${booking.id}`)}
                           className="h-8 w-8 rounded-full bg-white border-2 border-[#f1effb] text-[#9c83f3] shadow-[0_3px_0_#e4e2f2] inline-flex items-center justify-center hover:bg-[#f6f4fd] transition-all active:translate-y-0.5 active:shadow-[0_1px_0_#e4e2f2]"
