@@ -42,7 +42,7 @@ interface DashboardState {
   fetchRecentBookings: (page?: number, limit?: number) => Promise<void>;
 }
 
-export const useDashboardStore = create<DashboardState>((set) => ({
+export const useDashboardStore = create<DashboardState>((set, get) => ({
   stats: null,
   recentActivity: null,
   past7DaysCharts: [],
@@ -58,7 +58,11 @@ export const useDashboardStore = create<DashboardState>((set) => ({
   error: null,
 
   fetchDashboardData: async () => {
-    set({ isLoading: true, error: null });
+    const hasData = get().stats !== null;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await dashboardService.getDashboard();
       if (response.success) {
@@ -66,16 +70,16 @@ export const useDashboardStore = create<DashboardState>((set) => ({
           stats: response.data.stats,
           recentActivity: response.data.recentActivity,
           past7DaysCharts: response.data.charts,
-          isLoading: false,
         });
       } else {
         throw new Error("Failed to fetch dashboard data");
       }
     } catch (err: any) {
       set({
-        isLoading: false,
         error: err.message || "Something went wrong while fetching dashboard data",
       });
+    } finally {
+      set({ isLoading: false });
     }
   },
 

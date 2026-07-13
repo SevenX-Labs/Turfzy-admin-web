@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Search, CalendarRange, Clock, CreditCard, CheckCircle2, XCircle, AlertCircle, FileSpreadsheet, FileDown } from "lucide-react";
 import { useBookingsStore } from "@/store/bookings.store";
 import { BookingStatus, PaymentStatus } from "@/types/bookings";
+import { TableSkeleton, CardSkeleton } from "@/components/ui/skeleton-loaders";
 
 export default function BookingsPage() {
   const router = useRouter();
@@ -431,9 +432,13 @@ export default function BookingsPage() {
 
       {/* Bookings View Wrapper */}
       {isLoading ? (
-        <div className="py-24 text-center">
-          <div className="h-9 w-9 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-          <p className="text-xs font-bold text-[#8a7fa8] mt-3 animate-pulse">Loading bookings log...</p>
+        <div className="clay-card-white overflow-hidden p-6">
+          <div className="hidden md:block">
+            <TableSkeleton rowCount={5} columnCount={8} />
+          </div>
+          <div className="block md:hidden">
+            <CardSkeleton count={3} />
+          </div>
         </div>
       ) : (
         <div className="clay-card-white overflow-hidden p-6">

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Search, Mail, Phone, Calendar, MapPin, Download, UserCheck, UserX, Users } from "lucide-react";
 import { useUsersStore } from "@/store/users.store";
 import Link from "next/link";
+import { TableSkeleton, CardSkeleton } from "@/components/ui/skeleton-loaders";
 
 export default function UsersPage() {
   const {
@@ -164,10 +165,14 @@ export default function UsersPage() {
       {/* Responsive View (Table / Card Grid) */}
       <div className="clay-card-white overflow-hidden p-6">
         {isLoading ? (
-          <div className="py-24 text-center">
-            <div className="h-9 w-9 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-            <p className="text-xs font-bold text-[#8a7fa8] mt-3 animate-pulse">Loading users database...</p>
-          </div>
+          <>
+            <div className="hidden md:block">
+              <TableSkeleton rowCount={5} columnCount={6} />
+            </div>
+            <div className="block md:hidden">
+              <CardSkeleton count={3} />
+            </div>
+          </>
         ) : (
           <>
             {/* Desktop View */}

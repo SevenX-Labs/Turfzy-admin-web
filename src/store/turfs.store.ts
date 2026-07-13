@@ -50,7 +50,11 @@ export const useTurfsStore = create<TurfsState>((set, get) => ({
   error: null,
 
   fetchTurfs: async (params) => {
-    set({ isLoading: true, error: null });
+    const hasData = get().turfs.length > 0;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await turfsService.getTurfs(params);
       if (response.success) {
@@ -69,6 +73,7 @@ export const useTurfsStore = create<TurfsState>((set, get) => ({
   },
 
   fetchTurfStats: async () => {
+    if (get().stats) return; // Cache stats across navigation
     try {
       const [allRes, activeRes, pendingRes] = await Promise.all([
         turfsService.getTurfs({ limit: 1 }),
@@ -88,7 +93,11 @@ export const useTurfsStore = create<TurfsState>((set, get) => ({
   },
 
   fetchTurfDetails: async (id) => {
-    set({ isLoading: true, error: null });
+    const hasDetails = get().selectedTurf?.id === id;
+    if (!hasDetails) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await turfsService.getTurfDetails(id);
       if (response.success) {

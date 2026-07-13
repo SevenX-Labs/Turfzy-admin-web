@@ -22,6 +22,7 @@ import {
   CheckCircle,
   FileText,
 } from "lucide-react";
+import { DetailSkeleton } from "@/components/ui/skeleton-loaders";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -88,12 +89,7 @@ export default function OwnerDetailPage({ params }: PageProps) {
   };
 
   if (isLoading && !selectedOwner) {
-    return (
-      <div className="py-24 text-center">
-        <div className="h-9 w-9 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-        <p className="text-xs font-bold text-[#8a7fa8] mt-3 animate-pulse">Loading owner profile details...</p>
-      </div>
-    );
+    return <DetailSkeleton />;
   }
 
   if (!selectedOwner) {

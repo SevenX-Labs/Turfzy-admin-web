@@ -28,7 +28,11 @@ export const useNotificationsStore = create<NotificationsState>((set, get) => ({
   error: null,
 
   fetchHistory: async (page = 1, limit = 10) => {
-    set({ isLoading: true, error: null });
+    const hasData = get().logs.length > 0;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await notificationsService.getHistory(page, limit);
       if (response.success && response.data) {

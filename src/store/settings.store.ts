@@ -20,7 +20,11 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   error: null,
 
   fetchSettings: async () => {
-    set({ isLoading: true, error: null });
+    const hasData = get().settings !== null;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await settingsService.getSettings();
       if (response.success) {

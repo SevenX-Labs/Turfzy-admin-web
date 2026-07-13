@@ -54,7 +54,11 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   error: null,
 
   fetchUsers: async (params) => {
-    set({ isLoading: true, error: null });
+    const hasData = get().users.length > 0;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await usersService.getUsers(params);
       if (response.success) {
@@ -73,6 +77,7 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   },
 
   fetchUserStats: async () => {
+    if (get().stats) return; // Cache stats across navigation
     try {
       const [allRes, activeRes, suspendedRes] = await Promise.all([
         usersService.getUsers({ limit: 1 }),
@@ -92,7 +97,11 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   },
 
   fetchUserDetails: async (id) => {
-    set({ isLoading: true, error: null });
+    const hasDetails = get().selectedUser?.profile.id === id;
+    if (!hasDetails) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await usersService.getUserDetails(id);
       if (response.success) {

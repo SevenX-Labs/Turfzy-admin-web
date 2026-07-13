@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Search, Mail, Phone, Calendar, Landmark, Download, ShieldCheck, ShieldAlert, Users, Award } from "lucide-react";
 import { useOwnersStore } from "@/store/owners.store";
 import Link from "next/link";
+import { TableSkeleton, CardSkeleton } from "@/components/ui/skeleton-loaders";
 
 export default function OwnersPage() {
   const {
@@ -163,10 +164,14 @@ export default function OwnersPage() {
       {/* Responsive View (Table / Card Grid) */}
       <div className="clay-card-white overflow-hidden p-6">
         {isLoading ? (
-          <div className="py-24 text-center">
-            <div className="h-9 w-9 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-            <p className="text-xs font-bold text-[#8a7fa8] mt-3 animate-pulse">Loading owners database...</p>
-          </div>
+          <>
+            <div className="hidden md:block">
+              <TableSkeleton rowCount={5} columnCount={7} />
+            </div>
+            <div className="block md:hidden">
+              <CardSkeleton count={3} />
+            </div>
+          </>
         ) : (
           <>
             {/* Desktop View */}

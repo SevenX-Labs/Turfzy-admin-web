@@ -5,6 +5,7 @@ import { Search, MapPin, Star, ShieldAlert, Sparkles, SlidersHorizontal } from "
 import { useTurfsStore } from "@/store/turfs.store";
 import { TurfStatus } from "@/types/turfs";
 import Link from "next/link";
+import { CardSkeleton } from "@/components/ui/skeleton-loaders";
 
 export default function TurfsPage() {
   const {
@@ -173,9 +174,8 @@ export default function TurfsPage() {
 
       {/* Turf Grid */}
       {isLoading ? (
-        <div className="py-24 text-center">
-          <div className="h-9 w-9 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-          <p className="text-xs font-bold text-[#8a7fa8] mt-3 animate-pulse">Loading turfs directory...</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          <CardSkeleton count={6} />
         </div>
       ) : (
         <>

@@ -55,7 +55,11 @@ export const useOwnersStore = create<OwnersState>((set, get) => ({
   error: null,
 
   fetchOwners: async (params) => {
-    set({ isLoading: true, error: null });
+    const hasData = get().owners.length > 0;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await ownersService.getOwners(params);
       if (response.success) {
@@ -74,6 +78,7 @@ export const useOwnersStore = create<OwnersState>((set, get) => ({
   },
 
   fetchOwnerStats: async () => {
+    if (get().stats) return; // Cache stats across navigation
     try {
       const [allRes, activeRes, suspendedRes] = await Promise.all([
         ownersService.getOwners({ limit: 1 }),
@@ -93,7 +98,11 @@ export const useOwnersStore = create<OwnersState>((set, get) => ({
   },
 
   fetchOwnerDetails: async (id) => {
-    set({ isLoading: true, error: null });
+    const hasDetails = get().selectedOwner?.owner.id === id;
+    if (!hasDetails) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await ownersService.getOwnerDetails(id);
       if (response.success) {

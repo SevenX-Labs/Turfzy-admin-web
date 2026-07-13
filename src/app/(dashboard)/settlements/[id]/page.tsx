@@ -17,6 +17,7 @@ import {
   Hash,
   Send,
 } from "lucide-react";
+import { DetailSkeleton } from "@/components/ui/skeleton-loaders";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -92,12 +93,7 @@ export default function SettlementDetailPage({ params }: PageProps) {
   };
 
   if (isLoading && !selectedSettlement) {
-    return (
-      <div className="py-24 text-center">
-        <div className="h-9 w-9 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-        <p className="text-xs font-bold text-[#8a7fa8] mt-3 animate-pulse">Loading settlement detail...</p>
-      </div>
-    );
+    return <DetailSkeleton />;
   }
 
   if (!selectedSettlement) {

@@ -14,7 +14,7 @@ interface AuditLogsState {
   fetchLogs: (params: GetAuditLogsParams) => Promise<void>;
 }
 
-export const useAuditLogsStore = create<AuditLogsState>((set) => ({
+export const useAuditLogsStore = create<AuditLogsState>((set, get) => ({
   logs: [],
   total: 0,
   page: 1,
@@ -24,7 +24,11 @@ export const useAuditLogsStore = create<AuditLogsState>((set) => ({
   error: null,
 
   fetchLogs: async (params) => {
-    set({ isLoading: true, error: null });
+    const hasData = get().logs.length > 0;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await auditLogsService.getAuditLogs(params);
       if (response.success) {

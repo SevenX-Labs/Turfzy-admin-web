@@ -26,6 +26,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import { StatsSkeleton, TableSkeleton } from "@/components/ui/skeleton-loaders";
 
 // Custom Turf/Soccer Pitch Icon
 const TurfIcon = (props: any) => (
@@ -118,12 +119,54 @@ export default function DashboardPage() {
     }
   }, [fetchDashboardData]);
 
-  if (isLoading || !stats) {
+  if (!stats) {
     return (
-      <div className="flex h-[80vh] w-full items-center justify-center bg-[#f8f7fd]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-purple-600 border-t-transparent" />
-          <p className="text-sm font-semibold text-[#8a7fa8] animate-pulse">Loading dashboard metrics...</p>
+      <div className="space-y-7 pb-12 text-left">
+        {/* Banner Skeleton */}
+        <div className="clay-card-purple p-6 text-[#241c3d] animate-pulse">
+          <div className="h-7 w-48 bg-purple-950/20 rounded-xl" />
+          <div className="h-4 w-96 bg-purple-950/10 rounded-xl mt-2" />
+        </div>
+
+        {/* Stats Cards Skeleton */}
+        <StatsSkeleton count={4} />
+
+        {/* Charts & Finance Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7">
+          {/* Revenue chart skeleton */}
+          <div className="lg:col-span-8 clay-card-white p-6 min-h-[350px] flex flex-col justify-between">
+            <div>
+              <div className="h-5 w-32 bg-gray-200 rounded-lg animate-pulse" />
+              <div className="h-3 w-48 bg-gray-100 rounded-lg animate-pulse mt-1" />
+            </div>
+            <div className="h-64 w-full bg-gray-50/50 rounded-3xl animate-pulse mt-4 flex items-end justify-between p-6">
+              {[...Array(7)].map((_, i) => (
+                <div key={i} className="w-6 bg-purple-200/50 rounded-t-lg animate-pulse" style={{ height: `${20 + i * 10}%` }} />
+              ))}
+            </div>
+          </div>
+
+          {/* Donut chart skeleton */}
+          <div className="lg:col-span-4 clay-card-white p-6 min-h-[350px] flex flex-col justify-between">
+            <div>
+              <div className="h-5 w-32 bg-gray-200 rounded-lg animate-pulse" />
+              <div className="h-3 w-48 bg-gray-100 rounded-lg animate-pulse mt-1" />
+            </div>
+            <div className="h-36 w-36 mx-auto rounded-full border-8 border-purple-100/50 border-t-purple-400 animate-spin my-4 flex items-center justify-center">
+              <div className="h-20 w-20 rounded-full bg-white" />
+            </div>
+            <div className="space-y-2 mt-4 pt-4 border-t-2 border-[#f1effb]">
+              <div className="h-3.5 w-full bg-gray-100 rounded-lg animate-pulse" />
+              <div className="h-3.5 w-full bg-gray-100 rounded-lg animate-pulse" />
+              <div className="h-3.5 w-full bg-gray-100 rounded-lg animate-pulse" />
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Bookings table skeleton */}
+        <div className="clay-card-white p-6">
+          <div className="h-5 w-32 bg-gray-200 rounded-lg animate-pulse mb-4" />
+          <TableSkeleton rowCount={5} columnCount={7} />
         </div>
       </div>
     );

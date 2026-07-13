@@ -18,7 +18,11 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
   error: null,
 
   fetchAnalytics: async () => {
-    set({ isLoading: true, error: null });
+    const hasData = get().analytics !== null;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await analyticsService.getAnalytics();
       if (response.success) {

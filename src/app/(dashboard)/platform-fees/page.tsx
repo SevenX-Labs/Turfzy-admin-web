@@ -14,6 +14,7 @@ import {
   Sparkles,
   ArrowRight,
 } from "lucide-react";
+import { CardSkeleton } from "@/components/ui/skeleton-loaders";
 
 export default function PlatformFeesPage() {
   const {
@@ -139,10 +140,7 @@ export default function PlatformFeesPage() {
           </div>
 
           {isLoading ? (
-            <div className="py-12 text-center">
-              <div className="h-7 w-7 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-              <p className="text-[11px] font-bold text-[#8a7fa8] mt-2.5 animate-pulse">Loading fee slabs...</p>
-            </div>
+            <CardSkeleton count={3} />
           ) : slabs.length === 0 ? (
             <div className="clay-card-white p-8 text-center">
               <HelpCircle className="h-8 w-8 text-[#a79fc0] mx-auto opacity-70" />

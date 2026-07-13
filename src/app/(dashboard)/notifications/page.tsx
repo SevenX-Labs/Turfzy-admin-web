@@ -12,6 +12,7 @@ import {
   RefreshCw,
   Users,
 } from "lucide-react";
+import { CardSkeleton } from "@/components/ui/skeleton-loaders";
 
 export default function NotificationsPage() {
   const {
@@ -192,10 +193,7 @@ export default function NotificationsPage() {
           </div>
 
           {isLoading ? (
-            <div className="py-12 text-center">
-              <div className="h-7 w-7 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-              <p className="text-[11px] font-bold text-[#8a7fa8] mt-2 animate-pulse">Loading logs...</p>
-            </div>
+            <CardSkeleton count={3} />
           ) : logs.length === 0 ? (
             <p className="text-xs font-bold text-[#8a7fa8] py-8 text-center">No past broadcast notifications found.</p>
           ) : (

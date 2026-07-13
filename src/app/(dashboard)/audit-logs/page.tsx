@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuditLogsStore } from "@/store/audit-logs.store";
 import { Search, Calendar, RefreshCw, Clock, Terminal, User } from "lucide-react";
+import { TableSkeleton, CardSkeleton } from "@/components/ui/skeleton-loaders";
 
 export default function AuditLogsPage() {
   const {
@@ -99,10 +100,14 @@ export default function AuditLogsPage() {
       {/* Responsive Logs list/table */}
       <div className="clay-card-white overflow-hidden p-6">
         {isLoading ? (
-          <div className="py-24 text-center">
-            <div className="h-9 w-9 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-            <p className="text-xs font-bold text-[#8a7fa8] mt-3 animate-pulse">Loading audit logs...</p>
-          </div>
+          <>
+            <div className="hidden md:block">
+              <TableSkeleton rowCount={5} columnCount={5} />
+            </div>
+            <div className="block md:hidden">
+              <CardSkeleton count={3} />
+            </div>
+          </>
         ) : logs.length === 0 ? (
           <div className="py-16 text-center">
             <Terminal className="h-8 w-8 text-[#a79fc0] mx-auto opacity-70" />

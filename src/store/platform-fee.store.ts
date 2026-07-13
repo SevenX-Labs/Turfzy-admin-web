@@ -22,7 +22,11 @@ export const usePlatformFeeStore = create<PlatformFeeState>((set, get) => ({
   error: null,
 
   fetchSlabs: async () => {
-    set({ isLoading: true, error: null });
+    const hasData = get().slabs.length > 0;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const slabs = await platformFeeService.getSlabs();
       // Sort by minAmount to display them in logical order

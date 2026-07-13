@@ -50,7 +50,11 @@ export const useSettlementsStore = create<SettlementsState>((set, get) => ({
   },
 
   fetchSettlements: async () => {
-    set({ isLoading: true, error: null });
+    const hasData = get().settlements.length > 0;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const { statusFilter, currentPage } = get();
       const statusParam = statusFilter === "ALL" ? undefined : statusFilter;
@@ -73,7 +77,11 @@ export const useSettlementsStore = create<SettlementsState>((set, get) => ({
   },
 
   fetchSettlementDetails: async (id) => {
-    set({ isLoading: true, error: null });
+    const hasDetails = get().selectedSettlement?.id === id;
+    if (!hasDetails) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await settlementsService.getSettlementDetails(id);
       if (response.success) {

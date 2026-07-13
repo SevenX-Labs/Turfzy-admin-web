@@ -18,6 +18,7 @@ import {
   Hash,
   Laptop,
 } from "lucide-react";
+import { DetailSkeleton } from "@/components/ui/skeleton-loaders";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -50,12 +51,7 @@ export default function BookingDetailPage({ params }: PageProps) {
   };
 
   if (isLoading && !selectedBooking) {
-    return (
-      <div className="py-24 text-center">
-        <div className="h-9 w-9 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-        <p className="text-xs font-bold text-[#8a7fa8] mt-3 animate-pulse">Loading booking details...</p>
-      </div>
-    );
+    return <DetailSkeleton />;
   }
 
   if (!selectedBooking) {

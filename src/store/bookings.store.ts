@@ -54,7 +54,11 @@ export const useBookingsStore = create<BookingsState>((set, get) => ({
   error: null,
 
   fetchBookings: async (params) => {
-    set({ isLoading: true, error: null });
+    const hasData = get().bookings.length > 0;
+    if (!hasData) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await bookingsService.getBookings(params);
       if (response.success) {
@@ -73,6 +77,7 @@ export const useBookingsStore = create<BookingsState>((set, get) => ({
   },
 
   fetchBookingStats: async () => {
+    if (get().stats) return; // Cache stats across navigation
     try {
       const response = await bookingsService.getBookingStats();
       if (response.success) {
@@ -84,7 +89,11 @@ export const useBookingsStore = create<BookingsState>((set, get) => ({
   },
 
   fetchBookingDetails: async (id) => {
-    set({ isLoading: true, error: null });
+    const hasDetails = get().selectedBooking?.id === id;
+    if (!hasDetails) {
+      set({ isLoading: true });
+    }
+    set({ error: null });
     try {
       const response = await bookingsService.getBookingDetails(id);
       if (response.success) {

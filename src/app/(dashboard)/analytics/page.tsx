@@ -24,6 +24,7 @@ import {
   RefreshCw,
   XCircle,
 } from "lucide-react";
+import { StatsSkeleton } from "@/components/ui/skeleton-loaders";
 
 // Custom 3D Volumetric Cylinder Bar Shape Component for Peak Hours
 const CustomBar = (props: any) => {
@@ -85,11 +86,95 @@ export default function AnalyticsPage() {
     fetchAnalytics();
   }, [fetchAnalytics]);
 
-  if (isLoading && !analytics) {
+  if (!analytics) {
     return (
-      <div className="py-24 text-center">
-        <div className="h-9 w-9 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mx-auto" />
-        <p className="text-xs font-bold text-[#8a7fa8] mt-3 animate-pulse">Loading system analytics...</p>
+      <div className="space-y-7 pb-12 text-left">
+        {/* Page Header Skeleton */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <div className="h-7 w-48 bg-gray-200 rounded-lg animate-pulse" />
+            <div className="h-4 w-96 bg-gray-100 rounded-lg animate-pulse mt-1.5" />
+          </div>
+        </div>
+
+        {/* Metrics Row Skeleton */}
+        <StatsSkeleton count={4} />
+
+        {/* Main Grid: Peak Hours & City breakdown */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-7">
+          {/* Left Chart Skeleton */}
+          <div className="lg:col-span-8 clay-card-white p-6 min-h-[350px] flex flex-col justify-between">
+            <div>
+              <div className="h-5 w-48 bg-gray-200 rounded-lg animate-pulse" />
+              <div className="h-3 w-64 bg-gray-100 rounded-lg animate-pulse mt-1" />
+            </div>
+            <div className="h-64 w-full bg-gray-50/50 rounded-3xl animate-pulse mt-4 flex items-end justify-between p-6">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="w-6 bg-purple-200/50 rounded-t-lg animate-pulse" style={{ height: `${30 + i * 8}%` }} />
+              ))}
+            </div>
+          </div>
+
+          {/* Right City split Skeleton */}
+          <div className="lg:col-span-4 clay-card-white p-6 flex flex-col justify-between">
+            <div>
+              <div className="h-5 w-48 bg-gray-200 rounded-lg animate-pulse" />
+              <div className="h-3 w-64 bg-gray-100 rounded-lg animate-pulse mt-1" />
+            </div>
+            <div className="space-y-4 mt-5 flex-1">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <div className="flex justify-between text-xs font-bold">
+                    <div className="h-3.5 w-16 bg-gray-200 rounded-lg animate-pulse" />
+                    <div className="h-3.5 w-24 bg-gray-100 rounded-lg animate-pulse" />
+                  </div>
+                  <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden p-0.5">
+                    <div className="h-full bg-purple-200 rounded-full animate-pulse" style={{ width: `${80 - i * 15}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Rankings Grid Skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
+          <div className="clay-card-white p-6 space-y-4">
+            <div className="h-5 w-48 bg-gray-200 rounded-lg animate-pulse border-b border-[#f1effb] pb-3.5" />
+            <div className="space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="h-6 w-6 rounded-lg bg-gray-100 animate-pulse" />
+                    <div className="space-y-1">
+                      <div className="h-3.5 w-32 bg-gray-200 rounded-lg animate-pulse" />
+                      <div className="h-3 w-24 bg-gray-100 rounded-lg animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="h-4.5 w-16 bg-purple-100 rounded animate-pulse" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="clay-card-white p-6 space-y-4">
+            <div className="h-5 w-48 bg-gray-200 rounded-lg animate-pulse border-b border-[#f1effb] pb-3.5" />
+            <div className="space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <div className="h-6 w-6 rounded-lg bg-gray-100 animate-pulse" />
+                    <div className="space-y-1">
+                      <div className="h-3.5 w-32 bg-gray-200 rounded-lg animate-pulse" />
+                      <div className="h-3 w-24 bg-gray-100 rounded-lg animate-pulse" />
+                    </div>
+                  </div>
+                  <div className="h-4.5 w-16 bg-purple-100 rounded animate-pulse" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
