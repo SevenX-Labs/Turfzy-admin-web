@@ -12,6 +12,7 @@ export const bookingsService = {
     search?: string;
     bookingStatus?: BookingStatus;
     paymentStatus?: PaymentStatus;
+    refundStatus?: string;
     page?: number;
     limit?: number;
   }): Promise<BookingListResponse> {
@@ -40,6 +41,7 @@ export const bookingsService = {
     search?: string;
     bookingStatus?: BookingStatus;
     paymentStatus?: PaymentStatus;
+    refundStatus?: string;
   }): Promise<Blob> {
     const response = await api.get("/api/v1/admin/bookings/export/csv", {
       params,
@@ -52,6 +54,7 @@ export const bookingsService = {
     search?: string;
     bookingStatus?: BookingStatus;
     paymentStatus?: PaymentStatus;
+    refundStatus?: string;
   }): Promise<Blob> {
     const response = await api.get("/api/v1/admin/bookings/export/pdf", {
       params,

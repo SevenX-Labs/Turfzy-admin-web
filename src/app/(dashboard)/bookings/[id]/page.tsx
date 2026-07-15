@@ -17,6 +17,7 @@ import {
   AlertCircle,
   Hash,
   Laptop,
+  RefreshCw,
 } from "lucide-react";
 import { DetailSkeleton } from "@/components/ui/skeleton-loaders";
 
@@ -95,6 +96,32 @@ export default function BookingDetailPage({ params }: PageProps) {
       default:
         return "text-gray-600 bg-gray-50 border-gray-100";
     }
+  };
+
+  const getRefundStatusColor = (status: string) => {
+    switch (status) {
+      case "INITIATED":
+        return "text-amber-800 bg-amber-100 border-amber-200";
+      case "PROCESSED":
+        return "text-emerald-800 bg-emerald-100 border-emerald-200";
+      case "FAILED":
+        return "text-rose-800 bg-rose-100 border-rose-200";
+      default:
+        return "text-gray-600 bg-gray-50 border-gray-100";
+    }
+  };
+
+  const refundSteps = [
+    { key: "INITIATED", label: "Initiated", description: "Refund request submitted" },
+    { key: "PROCESSED", label: "Processed", description: "Amount sent to bank" },
+    { key: "COMPLETED", label: "Completed", description: "Credited to customer" },
+  ];
+
+  const getRefundStepIndex = (status: string) => {
+    if (status === "FAILED") return -1; // special failed state
+    if (status === "INITIATED") return 0;
+    if (status === "PROCESSED") return 1;
+    return -2; // NONE
   };
 
   return (
@@ -208,6 +235,12 @@ export default function BookingDetailPage({ params }: PageProps) {
                   <span>Total Amount Paid</span>
                   <span className="text-purple-600">₹{selectedBooking.amount}</span>
                 </div>
+                {selectedBooking.refundAmount > 0 && (
+                  <div className="flex justify-between border-t border-[#f8f7fd] pt-2">
+                    <span className="text-blue-700 font-bold">Refunded Amount</span>
+                    <span className="font-extrabold text-blue-700">₹{selectedBooking.refundAmount}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -231,6 +264,111 @@ export default function BookingDetailPage({ params }: PageProps) {
               </div>
             </div>
           )}
+
+          {/* Refund Progress Tracker */}
+          {selectedBooking.refundStatus && selectedBooking.refundStatus !== "NONE" && (() => {
+            const stepIndex = getRefundStepIndex(selectedBooking.refundStatus);
+            const isFailed = selectedBooking.refundStatus === "FAILED";
+
+            return (
+              <div className={`clay-card-white p-6 space-y-5 border-2 ${
+                isFailed ? "border-rose-200 bg-rose-50/20" : "border-blue-100 bg-blue-50/10"
+              }`}>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-extrabold text-[#241c3d] flex items-center gap-2">
+                    <RefreshCw className={`h-4.5 w-4.5 ${isFailed ? "text-rose-500" : "text-blue-500"}`} />
+                    Refund Progress Tracker
+                  </h3>
+                  <span className={`rounded-full px-3 py-1 text-[10px] font-extrabold border ${getRefundStatusColor(selectedBooking.refundStatus)}`}>
+                    {selectedBooking.refundStatus === "INITIATED" ? "Refund Initiated" : selectedBooking.refundStatus === "PROCESSED" ? "Refund Processed" : "Refund Failed"}
+                  </span>
+                </div>
+
+                {/* Failed State */}
+                {isFailed && (
+                  <div className="flex items-center gap-3 bg-rose-100/60 border border-rose-200 rounded-2xl p-4">
+                    <div className="h-10 w-10 rounded-xl bg-rose-200 flex items-center justify-center flex-shrink-0">
+                      <AlertCircle className="h-5 w-5 text-rose-700" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-extrabold text-rose-900">Refund Processing Failed</p>
+                      <p className="text-[11px] text-rose-700 font-bold mt-0.5">
+                        The refund could not be processed. Please check the gateway dashboard for more details.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Progress Steps */}
+                {!isFailed && (
+                  <div className="relative">
+                    {/* Progress Bar Background */}
+                    <div className="absolute top-[18px] left-[18px] right-[18px] h-1 bg-[#f1effb] rounded-full z-0" />
+                    {/* Progress Bar Fill */}
+                    <div
+                      className="absolute top-[18px] left-[18px] h-1 rounded-full z-[1] transition-all duration-700 ease-out"
+                      style={{
+                        width: stepIndex === 0 ? "0%" : stepIndex === 1 ? "calc(50% - 18px)" : "calc(100% - 36px)",
+                        background: "linear-gradient(90deg, #3b82f6, #0e9f6e)",
+                      }}
+                    />
+
+                    <div className="relative z-10 flex justify-between">
+                      {refundSteps.map((step, i) => {
+                        const isActive = i === stepIndex;
+                        const isCompleted = i < stepIndex;
+                        const isPending = i > stepIndex;
+
+                        return (
+                          <div key={step.key} className="flex flex-col items-center text-center w-1/3">
+                            <div className={`h-9 w-9 rounded-full flex items-center justify-center text-white text-xs font-black border-2 transition-all duration-300 ${
+                              isCompleted
+                                ? "bg-emerald-500 border-emerald-400 shadow-[0_0_0_4px_rgba(16,185,129,0.15)]"
+                                : isActive
+                                ? "bg-blue-500 border-blue-400 shadow-[0_0_0_4px_rgba(59,130,246,0.2)] animate-pulse"
+                                : "bg-[#e4e2f2] border-[#d8d5ed] text-[#8a7fa8]"
+                            }`}>
+                              {isCompleted ? (
+                                <CheckCircle className="h-4.5 w-4.5" />
+                              ) : (
+                                <span>{i + 1}</span>
+                              )}
+                            </div>
+                            <p className={`text-[10px] font-extrabold mt-2 ${
+                              isCompleted ? "text-emerald-700" : isActive ? "text-blue-700" : "text-[#8a7fa8]"
+                            }`}>
+                              {step.label}
+                            </p>
+                            <p className={`text-[9px] font-bold mt-0.5 ${
+                              isPending ? "text-[#b5aed0]" : "text-[#5b4e79]"
+                            }`}>
+                              {step.description}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Refund Amount & Reason */}
+                <div className="border-t border-[#f1effb] pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  {selectedBooking.refundAmount > 0 && (
+                    <div className="p-3 bg-[#f8f7fd] border border-[#f1effb] rounded-xl space-y-1">
+                      <p className="text-[9px] font-bold text-[#8a7fa8] uppercase">Refunded Amount</p>
+                      <p className="text-sm font-black text-blue-700">₹{selectedBooking.refundAmount}</p>
+                    </div>
+                  )}
+                  {selectedBooking.cancelReason && (
+                    <div className="p-3 bg-[#f8f7fd] border border-[#f1effb] rounded-xl space-y-1">
+                      <p className="text-[9px] font-bold text-[#8a7fa8] uppercase">Refund Reason</p>
+                      <p className="font-extrabold text-[#241c3d]">{selectedBooking.cancelReason}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Gateway audit trail */}
           <div className="clay-card-white p-6 space-y-4">

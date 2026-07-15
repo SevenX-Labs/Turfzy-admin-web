@@ -20,6 +20,7 @@ interface BookingsState {
     search?: string;
     bookingStatus?: BookingStatus;
     paymentStatus?: PaymentStatus;
+    refundStatus?: string;
     page?: number;
     limit?: number;
   }) => Promise<void>;
@@ -33,12 +34,14 @@ interface BookingsState {
     search?: string;
     bookingStatus?: BookingStatus;
     paymentStatus?: PaymentStatus;
+    refundStatus?: string;
   }) => Promise<void>;
   
   exportPdf: (params: {
     search?: string;
     bookingStatus?: BookingStatus;
     paymentStatus?: PaymentStatus;
+    refundStatus?: string;
   }) => Promise<void>;
   
   clearSelectedBooking: () => void;

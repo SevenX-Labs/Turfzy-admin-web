@@ -1,5 +1,6 @@
 export type BookingStatus = "PENDING_APPROVAL" | "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW" | "PENDING";
 export type PaymentStatus = "PENDING" | "PAID" | "FAILED" | "REFUNDED";
+export type RefundStatus = "NONE" | "INITIATED" | "PROCESSED" | "FAILED";
 
 export interface BookingUser {
   phone: string;
@@ -35,6 +36,8 @@ export interface BookingItem {
   scannedDevice?: string | null;
   scanIpAddress?: string | null;
   razorpayRefundId?: string | null;
+  refundStatus: RefundStatus;
+  refundAmount: number;
   cancelledAt?: string | null;
   cancelReason?: string | null;
   notes?: string | null;

@@ -23,6 +23,7 @@ export default function BookingsPage() {
   const [search, setSearch] = useState("");
   const [bookingStatusFilter, setBookingStatusFilter] = useState<"ALL" | BookingStatus>("ALL");
   const [paymentStatusFilter, setPaymentStatusFilter] = useState<"ALL" | PaymentStatus>("ALL");
+  const [refundStatusFilter, setRefundStatusFilter] = useState<"ALL" | "ANY" | "INITIATED" | "PROCESSED" | "FAILED">("ALL");
   const [currentPage, setCurrentPage] = useState(1);
 
   // Fetch stats and list on mount & filter changes
@@ -35,10 +36,11 @@ export default function BookingsPage() {
       search: search || undefined,
       bookingStatus: bookingStatusFilter === "ALL" ? undefined : bookingStatusFilter,
       paymentStatus: paymentStatusFilter === "ALL" ? undefined : paymentStatusFilter,
+      refundStatus: refundStatusFilter === "ALL" ? undefined : refundStatusFilter,
       page: currentPage,
       limit: 10,
     });
-  }, [search, bookingStatusFilter, paymentStatusFilter, currentPage, fetchBookings]);
+  }, [search, bookingStatusFilter, paymentStatusFilter, refundStatusFilter, currentPage, fetchBookings]);
 
   const handleBookingStatusChange = (status: typeof bookingStatusFilter) => {
     setBookingStatusFilter(status);
@@ -55,6 +57,7 @@ export default function BookingsPage() {
       search: search || undefined,
       bookingStatus: bookingStatusFilter === "ALL" ? undefined : bookingStatusFilter,
       paymentStatus: paymentStatusFilter === "ALL" ? undefined : paymentStatusFilter,
+      refundStatus: refundStatusFilter === "ALL" ? undefined : refundStatusFilter,
     });
   };
 
@@ -63,6 +66,7 @@ export default function BookingsPage() {
       search: search || undefined,
       bookingStatus: bookingStatusFilter === "ALL" ? undefined : bookingStatusFilter,
       paymentStatus: paymentStatusFilter === "ALL" ? undefined : paymentStatusFilter,
+      refundStatus: refundStatusFilter === "ALL" ? undefined : refundStatusFilter,
     });
   };
 
@@ -93,6 +97,19 @@ export default function BookingsPage() {
         return "text-rose-600 bg-rose-50 border-rose-100";
       case "REFUNDED":
         return "text-blue-600 bg-blue-50 border-blue-100";
+      default:
+        return "text-gray-600 bg-gray-50 border-gray-100";
+    }
+  };
+
+  const getRefundStatusColor = (status: string) => {
+    switch (status) {
+      case "INITIATED":
+        return "text-amber-800 bg-amber-100 border-amber-200";
+      case "PROCESSED":
+        return "text-emerald-800 bg-emerald-100 border-emerald-200";
+      case "FAILED":
+        return "text-rose-800 bg-rose-100 border-rose-200";
       default:
         return "text-gray-600 bg-gray-50 border-gray-100";
     }
@@ -402,31 +419,51 @@ export default function BookingsPage() {
           </div>
         </div>
 
-        {/* Payment Status Filters Row */}
-        <div className="flex flex-wrap gap-2 pt-3 border-t-2 border-[#f1effb]">
-          <span className="text-xs font-extrabold text-[#8a7fa8] self-center mr-2">Payment Status:</span>
-          {([
-            { label: "All Payments", value: "ALL" },
-            { label: "Paid", value: "PAID" },
-            { label: "Pending", value: "PENDING" },
-            { label: "Failed", value: "FAILED" },
-            { label: "Refunded", value: "REFUNDED" },
-          ] as const).map((item) => {
-            const isPayActive = paymentStatusFilter === item.value;
-            return (
-              <button
-                key={item.value}
-                onClick={() => handlePaymentStatusChange(item.value)}
-                className={`px-3 py-1 text-xs font-extrabold rounded-lg transition-all duration-150 ${
-                  isPayActive
-                    ? "bg-[#ffe0dd] border-2 border-[#fff0ee] text-rose-950 shadow-[0_3px_0_#f9c2bd]"
-                    : "bg-white text-[#5b4e79] border-2 border-[#ece8f8] hover:bg-[#f8f7fd]"
-                }`}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+        {/* Payment & Refund Filters Row */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-3 border-t-2 border-[#f1effb]">
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs font-extrabold text-[#8a7fa8] self-center mr-2">Payment Status:</span>
+            {([
+              { label: "All Payments", value: "ALL" },
+              { label: "Paid", value: "PAID" },
+              { label: "Pending", value: "PENDING" },
+              { label: "Failed", value: "FAILED" },
+              { label: "Refunded", value: "REFUNDED" },
+            ] as const).map((item) => {
+              const isPayActive = paymentStatusFilter === item.value;
+              return (
+                <button
+                  key={item.value}
+                  onClick={() => handlePaymentStatusChange(item.value)}
+                  className={`px-3 py-1 text-xs font-extrabold rounded-lg transition-all duration-150 ${
+                    isPayActive
+                      ? "bg-[#ffe0dd] border-2 border-[#fff0ee] text-rose-950 shadow-[0_3px_0_#f9c2bd]"
+                      : "bg-white text-[#5b4e79] border-2 border-[#ece8f8] hover:bg-[#f8f7fd]"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-extrabold text-[#8a7fa8]">Refund Status:</span>
+            <select
+              value={refundStatusFilter}
+              onChange={(e) => {
+                setRefundStatusFilter(e.target.value as any);
+                setCurrentPage(1);
+              }}
+              className="text-xs font-extrabold text-[#5b4e79] bg-white border-2 border-[#ece8f8] rounded-xl px-3 py-1.5 outline-none cursor-pointer hover:bg-[#f8f7fd] shadow-[0_2px_0_#ece8f8] transition-all"
+            >
+              <option value="ALL">All</option>
+              <option value="ANY">In Refund Stage</option>
+              <option value="INITIATED">Refund Initiated</option>
+              <option value="PROCESSED">Refund Processed</option>
+              <option value="FAILED">Refund Failed</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -434,7 +471,7 @@ export default function BookingsPage() {
       {isLoading ? (
         <div className="clay-card-white overflow-hidden p-6">
           <div className="hidden md:block">
-            <TableSkeleton rowCount={5} columnCount={8} />
+            <TableSkeleton rowCount={5} columnCount={9} />
           </div>
           <div className="block md:hidden">
             <CardSkeleton count={3} />
@@ -454,6 +491,7 @@ export default function BookingsPage() {
                   <th className="pb-4 pr-4">Date & Slot</th>
                   <th className="pb-4 pr-4">Amount</th>
                   <th className="pb-4 pr-4">Payment</th>
+                  <th className="pb-4 pr-4">Refund</th>
                   <th className="pb-4 pr-4">Status</th>
                   <th className="pb-4 pr-2 text-right">Actions</th>
                 </tr>
@@ -491,6 +529,14 @@ export default function BookingsPage() {
                       </span>
                     </td>
                     <td className="py-4 pr-4 whitespace-nowrap">
+                      {booking.refundStatus && booking.refundStatus !== "NONE" && (
+                        <span className={`inline-flex items-center gap-1 text-[9px] font-extrabold px-2 py-0.5 rounded-full border ${getRefundStatusColor(booking.refundStatus)}`}>
+                          {booking.refundStatus === "FAILED" && <AlertCircle className="h-3 w-3 text-rose-800" />}
+                          {booking.refundStatus === "INITIATED" ? "Refund Initiated" : booking.refundStatus === "PROCESSED" ? "Refund Processed" : "Refund Failed"}
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-4 pr-4 whitespace-nowrap">
                       <span className={`inline-block rounded-full px-2.5 py-0.5 text-[9px] font-extrabold border ${getStatusColor(booking.bookingStatus)}`}>
                         {booking.bookingStatus}
                       </span>
@@ -508,7 +554,7 @@ export default function BookingsPage() {
 
                 {bookings.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="py-12 text-center text-xs font-extrabold text-[#8a7fa8]">
+                    <td colSpan={9} className="py-12 text-center text-xs font-extrabold text-[#8a7fa8]">
                       No bookings found matching selected filters.
                     </td>
                   </tr>
@@ -558,9 +604,17 @@ export default function BookingsPage() {
                   <div className="flex justify-between items-center border-t border-[#f8f7fd] pt-2">
                     <div>
                       <p className="text-[9px] font-black text-[#8a7fa8] uppercase">Payment status</p>
-                      <span className={`inline-block text-[9px] font-extrabold px-2 py-0.5 rounded-full border mt-0.5 ${getPaymentStatusColor(booking.paymentStatus)}`}>
-                        {booking.paymentStatus}
-                      </span>
+                      <div className="flex flex-col gap-1.5 mt-0.5">
+                        <span className={`inline-block text-[9px] font-extrabold px-2 py-0.5 rounded-full border w-max ${getPaymentStatusColor(booking.paymentStatus)}`}>
+                          {booking.paymentStatus}
+                        </span>
+                        {booking.refundStatus && booking.refundStatus !== "NONE" && (
+                          <span className={`inline-flex items-center gap-1 text-[9px] font-extrabold px-2 py-0.5 rounded-full border w-max ${getRefundStatusColor(booking.refundStatus)}`}>
+                            {booking.refundStatus === "FAILED" && <AlertCircle className="h-3 w-3 text-rose-800" />}
+                            {booking.refundStatus === "INITIATED" ? "Refund Initiated" : booking.refundStatus === "PROCESSED" ? "Refund Processed" : "Refund Failed"}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <div className="text-right">
                       <p className="text-[9px] font-black text-[#8a7fa8] uppercase">Total Cost</p>
