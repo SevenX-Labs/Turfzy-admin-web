@@ -9,6 +9,9 @@ import { TableSkeleton, CardSkeleton } from "@/components/ui/skeleton-loaders";
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -16,6 +19,53 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+
+// Custom 3D Volumetric Cylinder Bar Shape Component
+const CustomBar = (props: any) => {
+  const { x, y, width, height, payload } = props;
+  if (!height) return null;
+
+  const radius = width / 2;
+
+  return (
+    <g>
+      {/* 3D drop shadow replica */}
+      <rect
+        x={x + 3}
+        y={y + 4}
+        width={width}
+        height={height}
+        rx={radius}
+        ry={radius}
+        fill="#1d1637"
+        opacity={0.12}
+      />
+      
+      {/* Main cylinder bar */}
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        rx={radius}
+        ry={radius}
+        fill={payload?.fill || "url(#barGrad-0)"}
+      />
+      
+      {/* Glossy overlay reflection on the left side of the cylinder */}
+      <rect
+        x={x + 2.5}
+        y={y + 3}
+        width={width * 0.22}
+        height={height - 6}
+        rx={radius * 0.22}
+        ry={radius * 0.22}
+        fill="#ffffff"
+        opacity={0.25}
+      />
+    </g>
+  );
+};
 
 export default function BookingsPage() {
   const router = useRouter();
@@ -35,6 +85,9 @@ export default function BookingsPage() {
   const [paymentStatusFilter, setPaymentStatusFilter] = useState<"ALL" | PaymentStatus>("ALL");
   const [refundStatusFilter, setRefundStatusFilter] = useState<"ALL" | "ANY" | "INITIATED" | "PROCESSED" | "FAILED">("ALL");
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [chartView, setChartView] = useState<"status" | "trend">("status");
+  const [timeframe, setTimeframe] = useState<"Today" | "Week" | "Month" | "3 Months" | "6 Months" | "Year">("Week");
 
   // Fetch stats and list on mount & filter changes
   useEffect(() => {
@@ -80,7 +133,7 @@ export default function BookingsPage() {
     });
   };
 
-  const getLineChartData = () => {
+  const getLineChartData = (t: "Today" | "Week" | "Month" | "3 Months" | "6 Months" | "Year") => {
     const total = stats?.TOTAL || 0;
     const confirmed = stats?.CONFIRMED || 0;
     const completed = stats?.COMPLETED || 0;
@@ -88,22 +141,53 @@ export default function BookingsPage() {
     const noShow = stats?.NO_SHOW || 0;
     const refunded = stats?.REFUNDED || 0;
 
-    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    const weights = [0.8, 1.2, 0.9, 1.1, 1.3, 1.5, 1.2]; // Weekend peaks
+    let intervals: string[] = [];
+    let weights: number[] = [];
 
-    return days.map((day, idx) => {
-      const w = weights[idx];
-      const baseTotal = Math.round((total / 7) * w);
+    if (t === "Today") {
+      intervals = ["09:00", "12:00", "15:00", "18:00", "21:00"];
+      weights = [0.15, 0.25, 0.3, 0.2, 0.1];
+    } else if (t === "Week") {
+      intervals = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      weights = [0.1, 0.12, 0.11, 0.13, 0.15, 0.22, 0.17];
+    } else if (t === "Month") {
+      intervals = ["Week 1", "Week 2", "Week 3", "Week 4"];
+      weights = [0.22, 0.28, 0.26, 0.24];
+    } else if (t === "3 Months") {
+      intervals = ["Month 1", "Month 2", "Month 3"];
+      weights = [0.3, 0.32, 0.38];
+    } else if (t === "6 Months") {
+      intervals = ["M1", "M2", "M3", "M4", "M5", "M6"];
+      weights = [0.12, 0.15, 0.18, 0.16, 0.17, 0.22];
+    } else {
+      intervals = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      weights = [0.07, 0.08, 0.07, 0.09, 0.08, 0.1, 0.11, 0.09, 0.08, 0.09, 0.07, 0.07];
+    }
+
+    return intervals.map((name, idx) => {
+      const w = weights[idx] || 0.1;
       return {
-        name: day,
-        Total: baseTotal,
-        Confirmed: Math.min(baseTotal, Math.round((confirmed / 7) * w)),
-        Completed: Math.min(baseTotal, Math.round((completed / 7) * w)),
-        Cancelled: Math.min(baseTotal, Math.round((cancelled / 7) * w)),
-        "No Show": Math.min(baseTotal, Math.round((noShow / 7) * w)),
-        Refunded: Math.min(baseTotal, Math.round((refunded / 7) * w)),
+        name,
+        Total: Math.round(total * w),
+        Confirmed: Math.round(confirmed * w),
+        Completed: Math.round(completed * w),
+        Cancelled: Math.round(cancelled * w),
+        "No Show": Math.round(noShow * w),
+        Refunded: Math.round(refunded * w),
       };
     });
+  };
+
+  const getStatusChartData = () => {
+    return [
+      { name: "Total", Count: stats?.TOTAL || 0, color: "#9c83f3", fill: "url(#barGrad-0)" },
+      { name: "Confirmed", Count: stats?.CONFIRMED || 0, color: "#3b82f6", fill: "url(#barGrad-5)" },
+      { name: "Completed", Count: stats?.COMPLETED || 0, color: "#0e9f6e", fill: "url(#barGrad-4)" },
+      { name: "Cancelled", Count: stats?.CANCELLED || 0, color: "#ff6b76", fill: "url(#barGrad-1)" },
+      { name: "No Show", Count: stats?.NO_SHOW || 0, color: "#ffb834", fill: "url(#barGrad-3)" },
+      { name: "Refunded", Count: stats?.REFUNDED || 0, color: "#2c8fe5", fill: "url(#barGrad-6)" },
+      { name: "Pending", Count: (stats?.PENDING ?? 0) + (stats?.PENDING_APPROVAL ?? 0), color: "#ffd29d", fill: "url(#barGrad-2)" },
+    ];
   };
 
   const getStatusColor = (status: BookingStatus) => {
@@ -240,24 +324,155 @@ export default function BookingsPage() {
         </div>
       </div>
 
-      {/* Bookings Activity Trend Line Graph */}
-      <div className="clay-card-white p-6 flex flex-col justify-between min-h-[400px]">
-        <div>
-          <h3 className="text-base font-extrabold text-[#241c3d] flex items-center gap-2">
-            <RefreshCw className="h-4.5 w-4.5 text-purple-600 animate-[spin_10s_linear_infinite]" />
-            Bookings Activity & Trend Analysis
-          </h3>
-          <p className="text-[11px] text-[#8a7fa8] mt-0.5 font-semibold">Weekly volume breakdown across booking statuses, cancellations, and refunds</p>
+      {/* Bookings Activity Trend & Status Distribution Chart */}
+      <div className="clay-card-white p-6 flex flex-col justify-between min-h-[440px]">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#f1effb] pb-4 mb-4">
+          <div>
+            <h3 className="text-base font-extrabold text-[#241c3d] flex items-center gap-2">
+              <RefreshCw className="h-4.5 w-4.5 text-purple-600 animate-[spin_15s_linear_infinite]" />
+              Bookings Activity & Trend Analysis
+            </h3>
+            <p className="text-[11px] text-[#8a7fa8] mt-0.5 font-semibold">
+              {chartView === "status" 
+                ? "Total number counts per booking status and platform fees" 
+                : "Timeline trend analysis across booking rates and transaction frequency"}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            {/* Timeframe selector (only for Trend View) */}
+            {chartView === "trend" && (
+              <div className="flex items-center gap-1 bg-[#f8f7fd] border-2 border-[#f1effb] rounded-2xl p-0.5">
+                {(["Today", "Week", "Month", "3 Months", "6 Months", "Year"] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTimeframe(t)}
+                    className={`px-2.5 py-1.5 rounded-xl text-[9px] font-black uppercase transition-all ${
+                      timeframe === t
+                        ? "bg-white text-purple-600 shadow-sm"
+                        : "text-[#8a7fa8] hover:text-[#5b4e79]"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Toggle between Status Metrics and Trend View */}
+            <div className="flex items-center bg-[#f8f7fd] border-2 border-[#f1effb] rounded-2xl p-1">
+              <button
+                onClick={() => setChartView("status")}
+                className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${
+                  chartView === "status"
+                    ? "bg-white text-purple-600 shadow-sm"
+                    : "text-[#8a7fa8] hover:text-[#5b4e79]"
+                }`}
+              >
+                Status Metrics
+              </button>
+              <button
+                onClick={() => setChartView("trend")}
+                className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase transition-all ${
+                  chartView === "trend"
+                    ? "bg-white text-purple-600 shadow-sm"
+                    : "text-[#8a7fa8] hover:text-[#5b4e79]"
+                }`}
+              >
+                Trend View
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="h-80 w-full mt-6">
+        <div className="h-80 w-full mt-2">
           {stats?.TOTAL === 0 ? (
             <div className="h-full flex items-center justify-center text-xs font-bold text-[#8a7fa8]">
               No booking activity records available.
             </div>
+          ) : chartView === "status" ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={getStatusChartData()} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                <defs>
+                  {/* Purple */}
+                  <linearGradient id="barGrad-0" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#c7b3ff" />
+                    <stop offset="35%" stopColor="#ab8eff" />
+                    <stop offset="100%" stopColor="#7c5beb" />
+                  </linearGradient>
+                  {/* Pink */}
+                  <linearGradient id="barGrad-1" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#ffa6bc" />
+                    <stop offset="35%" stopColor="#ff809b" />
+                    <stop offset="100%" stopColor="#f5476a" />
+                  </linearGradient>
+                  {/* Orange */}
+                  <linearGradient id="barGrad-2" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#ffd29d" />
+                    <stop offset="35%" stopColor="#ffa048" />
+                    <stop offset="100%" stopColor="#e37207" />
+                  </linearGradient>
+                  {/* Yellow */}
+                  <linearGradient id="barGrad-3" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#fff2be" />
+                    <stop offset="35%" stopColor="#ffd858" />
+                    <stop offset="100%" stopColor="#ebb118" />
+                  </linearGradient>
+                  {/* Green */}
+                  <linearGradient id="barGrad-4" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#c5f2b4" />
+                    <stop offset="35%" stopColor="#8fe26b" />
+                    <stop offset="100%" stopColor="#5fb932" />
+                  </linearGradient>
+                  {/* Blue */}
+                  <linearGradient id="barGrad-5" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#bce9ff" />
+                    <stop offset="35%" stopColor="#6dc5ff" />
+                    <stop offset="100%" stopColor="#2c8fe5" />
+                  </linearGradient>
+                  {/* Violet */}
+                  <linearGradient id="barGrad-6" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#dcc4ff" />
+                    <stop offset="35%" stopColor="#b695ff" />
+                    <stop offset="100%" stopColor="#8157e2" />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1effb" vertical={false} />
+                <XAxis
+                  dataKey="name"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#5b4e79", fontSize: 11, fontWeight: 700 }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: "#5b4e79", fontSize: 11, fontWeight: 700 }}
+                />
+                <Tooltip
+                  cursor={{ fill: "transparent" }}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const data = payload[0].payload;
+                      return (
+                        <div className="rounded-3xl border-2 border-[#f1effb] bg-white px-5 py-3 shadow-[0_8px_16px_rgba(36,28,61,0.08),0_4px_0_#e4e2f2] text-center">
+                          <p className="text-[10px] font-black text-[#8a7fa8] uppercase tracking-wider">Status</p>
+                          <p className="text-sm font-black text-[#241c3d] mt-1">{data.name}</p>
+                          <p className="text-base font-black mt-1" style={{ color: data.color }}>
+                            {data.Count} Bookings
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                />
+                <Bar dataKey="Count" shape={<CustomBar />} barSize={32} />
+              </BarChart>
+            </ResponsiveContainer>
           ) : (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={getLineChartData()} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+              <LineChart data={getLineChartData(timeframe)} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1effb" />
                 <XAxis 
                   dataKey="name" 
